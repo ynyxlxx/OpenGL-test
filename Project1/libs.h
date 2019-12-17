@@ -1,3 +1,8 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
 #include <GLEW/glew.h>
 
 #include <GLFW/glfw3.h>
@@ -12,4 +17,4 @@
 
 #include "SOIL2/SOIL2.h"
 
-#include <iostream>
+
