@@ -20,11 +20,12 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-using namespace std;
+#include "Shader.h"
 
 struct Vertex
 {
 	glm::vec3 position;
 	glm::vec3 color;
 	glm::vec2 texcoord;
+	glm::vec3 normal;
 };

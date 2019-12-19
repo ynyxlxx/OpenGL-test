@@ -2,11 +2,11 @@
 
 Vertex vertices[] =
 {
-	//position						//color							// texcoord
-	glm::vec3(-0.5f, 0.5f, 0.0f),	glm::vec3(1.0f, 0.0f, 0.0f),	glm::vec2(0.0f, 1.0f),
-	glm::vec3(-0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 1.0f, 0.0f),	glm::vec2(0.0f, 0.0f),
-	glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 0.0f, 1.0f),	glm::vec2(1.0f, 0.0f),
-	glm::vec3(0.5f, 0.5f, 0.0f),	glm::vec3(1.0f, 1.0f, 0.0f),	glm::vec2(1.0f, 1.0f)
+	//position						//color							// texcoord					//normal
+	glm::vec3(-0.5f, 0.5f, 0.0f),	glm::vec3(1.0f, 0.0f, 0.0f),	glm::vec2(0.0f, 1.0f),		glm::vec3(0.0f, 0.0f, 1.0f),
+	glm::vec3(-0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 1.0f, 0.0f),	glm::vec2(0.0f, 0.0f),		glm::vec3(0.0f, 0.0f, 1.0f),
+	glm::vec3(0.5f, -0.5f, 0.0f),	glm::vec3(0.0f, 0.0f, 1.0f),	glm::vec2(1.0f, 0.0f),		glm::vec3(0.0f, 0.0f, 1.0f),
+	glm::vec3(0.5f, 0.5f, 0.0f),	glm::vec3(1.0f, 0.0f, 1.0f),	glm::vec2(1.0f, 1.0f),		glm::vec3(0.0f, 0.0f, 1.0f),
 };
 unsigned nrOfVertices = sizeof(vertices) / sizeof(Vertex);
 
@@ -28,10 +28,10 @@ bool loadShaders(GLuint &program)
 	char infoLog[512];
 	GLint success;
 
-	string temp = "";
-	string src = "";
+	std::string temp = "";
+	std::string src = "";
 
-	fstream input_file;
+	std::fstream input_file;
 
 	//vertex shader
 	input_file.open("vertex_shader.glsl");
@@ -41,7 +41,7 @@ bool loadShaders(GLuint &program)
 			src += temp + "\n";
 	}
 	else {
-		cout << "ERROR::LOADING_SHADER::COULD_NOT_OPEN_VERTEX_FILE." << "\n";
+		std::cout << "ERROR::LOADING_SHADER::COULD_NOT_OPEN_VERTEX_FILE." << "\n";
 		loadSuccess = false;
 	}
 
@@ -56,8 +56,8 @@ bool loadShaders(GLuint &program)
 	if (!success)
 	{	
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		cout << "ERROR::LOADING_SHADER::COULD_NOT_COMPILE_VERTEX_SHADER." << "\n";
-		cout << infoLog << "\n";
+		std::cout << "ERROR::LOADING_SHADER::COULD_NOT_COMPILE_VERTEX_SHADER." << "\n";
+		std::cout << infoLog << "\n";
 		loadSuccess = false;
 	}
 
@@ -72,7 +72,7 @@ bool loadShaders(GLuint &program)
 			src += temp + "\n";
 	}
 	else {
-		cout << "ERROR::LOADING_SHADER::COULD_NOT_OPEN_FRAGMENT_FILE." << "\n";
+		std::cout << "ERROR::LOADING_SHADER::COULD_NOT_OPEN_FRAGMENT_FILE." << "\n";
 		loadSuccess = false;
 	}
 
@@ -87,8 +87,8 @@ bool loadShaders(GLuint &program)
 	if (!success)
 	{
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		cout << "ERROR::LOADING_SHADER::COULD_NOT_COMPILE_FRAGMENT_SHADER." << "\n";
-		cout << infoLog << "\n";
+		std::cout << "ERROR::LOADING_SHADER::COULD_NOT_COMPILE_FRAGMENT_SHADER." << "\n";
+		std::cout << infoLog << "\n";
 		loadSuccess = false;
 	}
 
@@ -104,8 +104,8 @@ bool loadShaders(GLuint &program)
 	if (!success) 
 	{
 		glGetShaderInfoLog(program, 512, NULL, infoLog);
-		cout << "ERROR::LOADING_SHADER::COULD_NOT_LINK_PROGRAM." << "\n";
-		cout << infoLog << "\n";
+		std::cout << "ERROR::LOADING_SHADER::COULD_NOT_LINK_PROGRAM." << "\n";
+		std::cout << infoLog << "\n";
 		loadSuccess = false;
 	}
 
@@ -125,6 +125,39 @@ void updateInput(GLFWwindow* window)
 	}
 }
 
+void updateInput(GLFWwindow* window, glm::vec3& position, glm::vec3& rotation, glm::vec3& scale)
+{
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		position.z -= 0.01f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		position.z += 0.01f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		position.x -= 0.01f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		position.x += 0.01f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		rotation.y += 2.f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	{
+		rotation.y -= 2.f;
+	}
+}
+
 int main()
 {
 	//init glfw
@@ -140,14 +173,13 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	
-	
 
 	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Test", NULL, NULL);
-
+	
+	glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
 	glfwSetFramebufferSizeCallback(window, framebuffer_resize_callback);
-	/*glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
-	glViewport(0, 0, framebufferWidth, framebufferHeight);*/
+	
+	//glViewport(0, 0, framebufferWidth, framebufferHeight);
 
 	glfwMakeContextCurrent(window); //important.
 
@@ -155,7 +187,7 @@ int main()
 	glewExperimental = GL_TRUE;
 
 	if (glewInit() != GLEW_OK) {
-		cout << "ERROR::GLEW_INIT_FAILED" << "\n";
+		std::cout << "ERROR::GLEW_INIT_FAILED" << "\n";
 		glfwTerminate();
 	}
 
@@ -204,6 +236,10 @@ int main()
 	////texcoord
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoord));
 	glEnableVertexAttribArray(2);
+	////normal
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
+	glEnableVertexAttribArray(3);
+
 
 	//bind VAO 0
 	glBindVertexArray(0);
@@ -211,7 +247,7 @@ int main()
 	//texture init.
 	int image_width = 0;
 	int image_height = 0;
-	unsigned char* image = SOIL_load_image("Image/mario.png", &image_width, &image_height, NULL, SOIL_LOAD_RGBA);
+	unsigned char* image = SOIL_load_image("Image/pusheen.png", &image_width, &image_height, NULL, SOIL_LOAD_RGBA);
 
 	GLuint texture0;
 	glGenTextures(1, &texture0);
@@ -230,7 +266,7 @@ int main()
 	}
 	else 
 	{
-		cout << "ERROR::LOADING_TEXTURE_FAILED" << "\n";
+		std::cout << "ERROR::LOADING_TEXTURE_FAILED" << "\n";
 	}
 
 	glClientActiveTexture(0);          ///unbind and free the memory.
@@ -238,8 +274,50 @@ int main()
 	SOIL_free_image_data(image);
 
 
-	glm::mat4 ModelMatrix(1.0f);
+	//Matrix init
+	glm::vec3 position(0.f);
+	glm::vec3 rotation(0.f);
+	glm::vec3 scale(1.f);
 
+	glm::mat4 ModelMatrix(1.0f);
+	ModelMatrix = glm::translate(ModelMatrix, position);
+	ModelMatrix = glm::rotate(ModelMatrix, glm::radians(rotation.x), glm::vec3(1.f, 0.f, 0.f));
+	ModelMatrix = glm::rotate(ModelMatrix, glm::radians(rotation.y), glm::vec3(0.f, 1.f, 0.f));
+	ModelMatrix = glm::rotate(ModelMatrix, glm::radians(rotation.z), glm::vec3(0.f, 0.f, 1.f));
+	ModelMatrix = glm::scale(ModelMatrix, scale);
+	
+
+	glm::vec3 camPosition(0.f, 0.f, 1.0f);
+	glm::vec3 worldUp(0.f, 1.f, 0.f);
+	glm::vec3 camFront(0.f, 0.f, -1.f);
+	glm::mat4 ViewMatrix(1.0f);
+	ViewMatrix = glm::lookAt(camPosition, camPosition + camFront, worldUp);
+
+	float fov = 90.f;
+	float nearPlane = 0.1f;
+	float farPlane = 1000.f;
+	glm::mat4 ProjectionMatrix(1.0f);
+
+	ProjectionMatrix = glm::perspective(
+		glm::radians(fov),
+		static_cast<float> (framebufferWidth) / framebufferHeight,
+		nearPlane,
+		farPlane
+	);
+
+	//Light
+	glm::vec3 lightPos0(0.f, 0.f, 2.f);
+
+	glUniform3fv(glGetUniformLocation(core_program, "lightPosition"), 1, glm::value_ptr(lightPos0));
+	glUniform3fv(glGetUniformLocation(core_program, "cameraPos"), 1, glm::value_ptr(camPosition));
+
+	/*glUseProgram(core_program);
+
+	glUniformMatrix4fv(glGetUniformLocation(core_program, "ModelMatrix"), 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(core_program, "ViewMatrix"), 1, GL_FALSE, glm::value_ptr(ViewMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(core_program, "ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
+
+	glUseProgram(0);*/
 
 	//main loop
 
@@ -253,7 +331,7 @@ int main()
 		///DRAW
 		
 		//Clear
-		glClearColor(0.2f, 0.3f, 0.3f, 1.f);
+		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		//Use a program
@@ -263,13 +341,28 @@ int main()
 		glUniform1i(glGetUniformLocation(core_program, "texture0"), 0);
 
 		//move, rotate, scale
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.f, 0.f, 0.f));
-		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(0.f), glm::vec3(1.f, 0.f, 0.f));
-		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(0.f), glm::vec3(0.f, 1.f, 0.f));
-		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(1.f), glm::vec3(0.f, 0.f, 1.f));
-		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0f));
+		updateInput(window, position, rotation, scale);
+
+		glm::mat4 ModelMatrix(1.0f);
+		ModelMatrix = glm::translate(ModelMatrix, position);
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(rotation.x), glm::vec3(1.f, 0.f, 0.f));
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(rotation.y), glm::vec3(0.f, 1.f, 0.f));
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(rotation.z), glm::vec3(0.f, 0.f, 1.f));
+		ModelMatrix = glm::scale(ModelMatrix, scale);
+
+		glm::mat4 ProjectionMatrix(1.f);
+		glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
+
+		ProjectionMatrix = glm::perspective(
+			glm::radians(fov),
+			static_cast<float> (framebufferWidth) / framebufferHeight,
+			nearPlane,
+			farPlane
+		);
 
 		glUniformMatrix4fv(glGetUniformLocation(core_program, "ModelMatrix"), 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+		glUniformMatrix4fv(glGetUniformLocation(core_program, "ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
+		glUniformMatrix4fv(glGetUniformLocation(core_program, "ViewMatrix"), 1, GL_FALSE, glm::value_ptr(ViewMatrix));
 
 		//activate texture
 		glActiveTexture(GL_TEXTURE0);
