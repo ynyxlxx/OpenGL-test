@@ -237,6 +237,10 @@ int main()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	SOIL_free_image_data(image);
 
+
+	glm::mat4 ModelMatrix(1.0f);
+
+
 	//main loop
 
 	while (!glfwWindowShouldClose(window))
@@ -254,9 +258,18 @@ int main()
 
 		//Use a program
 		glUseProgram(core_program);
-		
+
 		//update uniforms.
 		glUniform1i(glGetUniformLocation(core_program, "texture0"), 0);
+
+		//move, rotate, scale
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.f, 0.f, 0.f));
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(0.f), glm::vec3(1.f, 0.f, 0.f));
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(0.f), glm::vec3(0.f, 1.f, 0.f));
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(1.f), glm::vec3(0.f, 0.f, 1.f));
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0f));
+
+		glUniformMatrix4fv(glGetUniformLocation(core_program, "ModelMatrix"), 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
 		//activate texture
 		glActiveTexture(GL_TEXTURE0);
