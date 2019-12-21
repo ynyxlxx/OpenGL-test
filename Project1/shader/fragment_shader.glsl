@@ -16,6 +16,8 @@ void main()
 {	
 	//fs_color = vec4(vs_color, 1.f);
 
+	//fs_color = vec4(1.f, 1.f, 1.f, 1.f);
+
 	//Ambient light
 	vec3 ambientLight = vec3(0.1f, 0.1f, 0.1f);
 
@@ -37,4 +39,6 @@ void main()
 	fs_color = texture(texture0, vs_texcoord)
 	* vec4(vs_color, 1.f)
 	* (vec4(ambientLight, 1.f) + vec4(diffuseFinal, 1.f) + vec4(specularFinal, 1.f));
+	
+	
 }

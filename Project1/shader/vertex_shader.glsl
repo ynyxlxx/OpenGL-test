@@ -15,7 +15,9 @@ uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
 void main()
-{
+{	
+
+	//vs_position = vec4(ModelMatrix * vec4(vertex_position.x + 10, vertex_position.y + 50, vertex_position.z, 1.f)).xyz;
 	vs_position = vec4(ModelMatrix * vec4(vertex_position, 1.f)).xyz;
 	vs_color = vertex_color;
 	vs_texcoord = vec2(vertex_texcoord.x * -1, vertex_texcoord.y * -1.f);
