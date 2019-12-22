@@ -21,6 +21,9 @@
 //#include "stb_image.h"
 
 #include "Shader.h"
+#include "Texture.h"
+#include "Material.h"
+#include "Mesh.h"
 
 struct Vertex
 {

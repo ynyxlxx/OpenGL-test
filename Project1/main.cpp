@@ -244,40 +244,18 @@ int main()
 	//bind VAO 0
 	glBindVertexArray(0);
 
-	//texture init.
-	int image_width = 0;
-	int image_height = 0;
-	unsigned char* image = SOIL_load_image("Image/pusheen.png", &image_width, &image_height, NULL, SOIL_LOAD_RGBA);
-
-	GLuint texture0;
-	glGenTextures(1, &texture0);
-	glBindTexture(GL_TEXTURE_2D, texture0);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//Texture
+	Texture texture0("Image/pusheen.png", GL_TEXTURE_2D, 0);
 
 
-	if (image)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "ERROR::LOADING_TEXTURE_FAILED" << "\n";
-	}
-
-	glClientActiveTexture(0);          ///unbind and free the memory.
-	glBindTexture(GL_TEXTURE_2D, 0);
-	SOIL_free_image_data(image);
+	//Material 
+	Material material0(glm::vec3(0.1f), glm::vec3(1.f), glm::vec3(1.f), texture0.getTextureUnit(), texture0.getTextureUnit());
 
 
 	//Matrix init
-	glm::vec3 position(0.f);
+	glm::vec3 position(0.f, 0.f, 2.f);
 	glm::vec3 rotation(0.f);
-	glm::vec3 scale(1.f);
+	glm::vec3 scale(2.f);
 
 	glm::mat4 ModelMatrix(1.0f);
 	ModelMatrix = glm::translate(ModelMatrix, position);
@@ -287,7 +265,7 @@ int main()
 	ModelMatrix = glm::scale(ModelMatrix, scale);
 
 
-	glm::vec3 camPosition(0.f, 0.f, 1.0f);
+	glm::vec3 camPosition(0.f, 0.f, 3.0f);
 	glm::vec3 worldUp(0.f, 1.f, 0.f);
 	glm::vec3 camFront(0.f, 0.f, -1.f);
 	glm::mat4 ViewMatrix(1.0f);
@@ -295,7 +273,7 @@ int main()
 
 	float fov = 90.f;
 	float nearPlane = 0.1f;
-	float farPlane = 1000.f;
+	float farPlane = 100.f;
 	glm::mat4 ProjectionMatrix(1.0f);
 
 	ProjectionMatrix = glm::perspective(
@@ -306,7 +284,7 @@ int main()
 	);
 
 	//Light
-	glm::vec3 lightPos0(0.f, 0.f, 2.f);
+	glm::vec3 lightPos0(0.f, 0.f, 4.f);
 
 	core_program.setVec3f(lightPos0, "lightPos0");
 	core_program.setVec3f(camPosition, "cameraPos");
@@ -342,7 +320,7 @@ int main()
 		core_program.use();
 
 		//update uniforms.
-		core_program.set1i(0, "texture0");
+		core_program.set1i(texture0.getTextureUnit(), "texture0");
 		//glUniform1i(glGetUniformLocation(core_program, "texture0"), 0);
 
 		//move, rotate, scale
@@ -374,8 +352,10 @@ int main()
 		//glUniformMatrix4fv(glGetUniformLocation(core_program, "ViewMatrix"), 1, GL_FALSE, glm::value_ptr(ViewMatrix));
 
 		//activate texture
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture0);
+		/*glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture0);*/
+		texture0.bind();
+		material0.sendToShader(core_program);
 
 		//Bind vertex array object
 		glBindVertexArray(VAO);
@@ -389,8 +369,10 @@ int main()
 
 		glBindVertexArray(0);			////clean the stuff.
 		glUseProgram(0);
-		glActiveTexture(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
+
+		texture0.unbind();
+
+		core_program.unuse();
 	}
 
 
