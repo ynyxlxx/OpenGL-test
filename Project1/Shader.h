@@ -19,6 +19,8 @@ class Shader
 private:
 	//Member variables
 	GLuint id;
+	const int versionMajor;
+	const int versionMinor;
 
 	//Private Function
 	std::string loadShaderSource(const char* fileName)
@@ -42,6 +44,14 @@ private:
 		}
 
 		in_file.close();
+
+		std::string versionNr =
+			std::to_string(this->versionMajor) +
+			std::to_string(this->versionMinor) +
+			"0";
+		src.replace(src.find("#version"), 12, ("#version " + versionNr));
+
+		std::cout << src << "\n";
 
 		return src;
 	}
@@ -99,7 +109,9 @@ private:
 
 public:
 	//Constructors/ Destructors
-	Shader(const char* vertexFile, const char* fragmentFile, const char* geometryFile = "")		
+	Shader(const int versionMajor, const int versionMinor,
+		const char* vertexFile, const char* fragmentFile, 
+		const char* geometryFile = "") : versionMajor(versionMajor), versionMinor(versionMinor)
 	{
 		GLuint vertexShader = 0;
 		GLuint geometryShader = 0;
@@ -138,65 +150,65 @@ public:
 
 	void set1i(GLint value, const GLchar* name)
 	{
-		//this->use();
+		this->use();
 
 		glUniform1i(glGetUniformLocation(this->id, name), value);
 
-		//this->unuse();
+		this->unuse();
 	}
 
 	void set1f(GLfloat value, const GLchar* name)
 	{
-		//this->use();
+		this->use();
 
 		glUniform1f(glGetUniformLocation(this->id, name), value);
 
-		//this->unuse();
+		this->unuse();
 	}
 
 	void setVec2f(glm::fvec2 value, const GLchar* name)
 	{
-		//this->use();
+		this->use();
 
 		glUniform2fv(glGetUniformLocation(this->id, name), 1, glm::value_ptr(value));
 
-		//this->unuse();
+		this->unuse();
 	}
 
 	void setVec3f(glm::fvec3 value, const GLchar* name)
 	{
-		//this->use();
+		this->use();
 
 		glUniform3fv(glGetUniformLocation(this->id, name), 1, glm::value_ptr(value));
 
-		//this->unuse();
+		this->unuse();
 	}
 
 	void setVec4f(glm::fvec4 value, const GLchar* name)
 	{
-		//this->use();
+		this->use();
 
 		glUniform4fv(glGetUniformLocation(this->id, name), 1, glm::value_ptr(value));
 
-		//this->unuse();
+		this->unuse();
 	}
 
 	void setMat3fv(glm::mat3 value, const GLchar* name, GLboolean transpose = GL_FALSE)
 	{
-		//this->use();
+		this->use();
 
 		glUniformMatrix3fv(glGetUniformLocation(this->id, name), 1, transpose, glm::value_ptr(value));
 
-		//this->unuse();
+		this->unuse();
 	}
 
 	void setMat4fv(glm::mat4 value, const GLchar* name, GLboolean transpose = GL_FALSE)
 	{
-		//this->use();
+		this->use();
 
 		glUniformMatrix4fv(glGetUniformLocation(this->id, name), 1, transpose, glm::value_ptr(value));
 
-		//this->unuse();
+		this->unuse();
 	}
 
 };

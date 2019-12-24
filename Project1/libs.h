@@ -20,15 +20,6 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-#include "Shader.h"
-#include "Texture.h"
-#include "Material.h"
 #include "Mesh.h"
 
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 color;
-	glm::vec2 texcoord;
-	glm::vec3 normal;
-};
+
