@@ -51,8 +51,6 @@ private:
 			"0";
 		src.replace(src.find("#version"), 12, ("#version " + versionNr));
 
-		std::cout << src << "\n";
-
 		return src;
 	}
 
